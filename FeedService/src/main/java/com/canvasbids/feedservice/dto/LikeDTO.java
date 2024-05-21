@@ -14,16 +14,9 @@ import lombok.Setter;
 public class LikeDTO {
     @NotBlank
     String postId;
-//    @NotBlank
-//    String name;
-//    //User profile picture
-//    @NotBlank
-//    String picture;
 
     public Like toLike(){
         return Like.builder()
-//                .name(this.name)
-//                .picture(this.picture)
                 .build();
     }
 }

@@ -1,7 +1,10 @@
 package com.canvasbids.userservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,9 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 @Entity
 @Data
@@ -21,15 +22,19 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 public class User implements UserDetails {
-    String name;
+    private String name;
     @Id
-    String email;
-    String password;
-    @CreationTimestamp
-    Date createdOn;
+    private String email;
+    private String password;
     @UpdateTimestamp
-    Date updatedOn;
-    String picture;
+    private Date updatedOn;
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Date createdOn;
+    private String picture;
+    @OneToMany
+    @JsonIgnore
+    private Set<ConnectionRequest> connectionRequests;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -4,6 +4,8 @@ import com.canvasbids.userservice.entity.User;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.util.HashSet;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,6 +25,7 @@ public class UserRegistrationDTO {
                 .email(this.email)
                 .password(this.password)
                 .picture(this.picture)
+                .connectionRequests(new HashSet<>())
                 .build();
     }
 }

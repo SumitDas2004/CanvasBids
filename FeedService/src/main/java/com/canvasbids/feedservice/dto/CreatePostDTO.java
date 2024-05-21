@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -19,14 +20,17 @@ public class CreatePostDTO {
     private String description;
     @NotNull
     private List<String> pictures;
-    private boolean isAuctionItem;
+    private Boolean isAuctionItem;
+    private long minimumBidAmount;
     public Post toPost(){
+        System.out.println(this.isAuctionItem);
         return Post.builder()
                 .description(this.description)
                 .pictures(this.pictures)
                 .auctionItemFlag(this.isAuctionItem)
-                .cntComments(0)
-                .cntLikes(0)
+                .minimumBidAmount(this.minimumBidAmount)
+                .expiresAt(new Date(System.currentTimeMillis()+1000*60*60*24))
+                .isAuctionOpen(this.isAuctionItem)
                 .build();
     }
 }

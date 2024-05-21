@@ -33,6 +33,7 @@ public class Comment {
 
     private String picture;
     @CreationTimestamp
+    @Column(updatable = false)
     private Date createdAt;
     @UpdateTimestamp
     private Date UpdatedAt;

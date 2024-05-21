@@ -1,7 +1,10 @@
 package com.canvasbids.userservice.service;
 
+import com.canvasbids.userservice.dao.ChatFeignDao;
+import com.canvasbids.userservice.dao.ConnectionRequestDao;
 import com.canvasbids.userservice.dao.UserDao;
 import com.canvasbids.userservice.dto.*;
+import com.canvasbids.userservice.entity.ConnectionRequest;
 import com.canvasbids.userservice.entity.User;
 import com.canvasbids.userservice.exception.IncorrectPasswordException;
 import com.canvasbids.userservice.exception.InvalidCredentialsFormat;
@@ -13,11 +16,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -31,7 +32,14 @@ public class UserService {
     PasswordEncoder encoder;
 
     @Autowired
+    ConnectionRequestDao connectionRequestDao;
+
+    @Autowired
     UserDao userdao;
+
+    @Autowired
+    ChatFeignDao chatFeignDao;
+
     public String register(UserRegistrationDTO request) throws UserAlreadyExistsException, InvalidCredentialsFormat {
 
         if(invalidEmailFormat(request.getEmail()))
@@ -114,6 +122,54 @@ public class UserService {
     public String updateName(UpdateNameDTO request, String username){
         userdao.updateName(request.getName(), username);
         return "Updated name successfully.";
+    }
+
+    @Transactional
+    public void acceptConnectionRequest(String id, String receiver){
+        ConnectionRequest request = connectionRequestDao.findById(id).get();
+        if(!request.getReceiverId().equals(receiver))throw new RuntimeException("User is not the recipient of the request");
+        connectionRequestDao.delete(request);
+        createChat(request);
+    }
+
+    public void createChat(ConnectionRequest request){
+        Map<String, String> details = new HashMap<>();
+
+        details.put("id", request.getId());
+        details.put("user1", request.getSenderId());
+        details.put("user2", request.getReceiverId());
+        details.put("user1Pic", request.getSenderPic());
+        details.put("user2Pic", request.getReceiverPic());
+        details.put("user1Name", request.getSenderName());
+        details.put("user2Name", request.getReceiverName());
+
+        chatFeignDao.createChat(details);
+
+    }
+
+    public void sendConnectionRequest(String sender, String receiver){
+        if(sender.equals(receiver))throw new RuntimeException("Can't send request to self.");
+
+        Map<String, String> senderDetails = getNameAndPicture(sender);
+        Map<String, String> receiverDetails = getNameAndPicture(receiver);
+
+        ConnectionRequest request = ConnectionRequest.builder()
+                .id(generateConnectionRequestId(sender, receiver))
+                .senderId(sender)
+                .receiverId(receiver)
+                .senderName(senderDetails.get("name"))
+                .receiverName(receiverDetails.get("name"))
+                .senderPic(senderDetails.get("picture"))
+                .receiverPic(receiverDetails.get("picture"))
+                .build();
+
+        connectionRequestDao.save(request);
+    }
+
+    public String generateConnectionRequestId(String sender, String receiver){
+        String[] arr = new String[]{sender, receiver};
+        Arrays.sort(arr);
+        return arr[0]+"$"+arr[1];
     }
 
 }

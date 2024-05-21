@@ -17,15 +17,15 @@ import java.util.List;
 public class UpdatePostDTO {
     @NotBlank
     private String description;
-    @NotNull
-    private List<String> pictures;
     @NotBlank
     private String postId;
     private boolean auctionItemFlag;
+    private long minimumBidAmount;
     public Post updatePost(Post post){
-        post.setPictures(this.pictures);
         post.setDescription(this.description);
         post.setAuctionItemFlag(this.auctionItemFlag);
+        post.setMinimumBidAmount(this.minimumBidAmount);
         return post;
+
     }
 }

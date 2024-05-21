@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-public class FeedController {
+public class PostController {
     @Autowired
     PostService postService;
 
@@ -55,6 +55,11 @@ public class FeedController {
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
+    @PutMapping("/updateTimer/{postId}")
+    public void updateTimer(@PathVariable String postId){
+        postService.updatePostTimer(postId);
+    }
+
 
 
     @ExceptionHandler(PostDoesNotExistException.class)
@@ -80,5 +85,11 @@ public class FeedController {
         map.put("message", "Operation failed.");
         map.put("error", "Some fields are empty. Please check the input.");
         return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    //methods to be used by other bid services
+    @GetMapping("/isValidBid/{postId}/{amount}")
+    boolean isValidBid(@PathVariable("postId") String postId, @PathVariable("amount") long amount) throws PostDoesNotExistException {
+        return postService.isValidBid(postId, amount);
     }
 }

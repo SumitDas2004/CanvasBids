@@ -11,11 +11,11 @@ import java.sql.Statement;
 public class PostIdGenerator implements IdentifierGenerator {
     @Override
     public Object generate(SharedSessionContractImplementor session, Object object) {
-        String prefix = "#post:";
+        String prefix = "post:";
         int base=1000000;
         try (Connection connection = session.getSession().getJdbcConnectionAccess().obtainConnection()){
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT COUNT(id) FROM post");
+            ResultSet rs = statement.executeQuery("SELECT COUNT(id) FROM posts");
             if(rs.next()){
                 int cnt = rs.getInt(1);
                 base+=cnt;

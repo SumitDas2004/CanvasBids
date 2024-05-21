@@ -24,4 +24,5 @@ public class GetPostDTO {
     Date createdAt;
     Date updatedAt;
     private boolean auctionItemFlag;
+    private long minimumBidAmount;
 }

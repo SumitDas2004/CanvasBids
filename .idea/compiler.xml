@@ -8,9 +8,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="feed" />
+        <module name="feedservice" />
+        <module name="chat" />
+        <module name="userservice" />
         <module name="gateway" />
         <module name="service-registry" />
-        <module name="userservice" />
         <module name="auction" />
       </profile>
     </annotationProcessing>
@@ -19,7 +21,9 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="CanvasBids" options="" />
       <module name="auction" options="-parameters" />
+      <module name="chat" options="-parameters" />
       <module name="feed" options="-parameters" />
+      <module name="feedservice" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="service-registry" options="-parameters" />
       <module name="userservice" options="-parameters" />

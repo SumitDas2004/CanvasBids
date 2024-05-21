@@ -98,13 +98,33 @@ public class UserController {
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
-    @PatchMapping("/picture")
+    @PatchMapping("/name")
     public ResponseEntity<?> changeName(@Valid @RequestBody UpdateNameDTO request, @RequestHeader("loggedInUsername") String username) {
 
         String msg = userService.updateName(request, username);
         Map<String, Object> map = new HashMap<>();
         map.put("status", 1);
         map.put("message", msg);
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+    @PostMapping("/sendRequest/{receiver}")
+    public ResponseEntity<?> sendReqest(@PathVariable("receiver") String receiver, @RequestHeader("loggedInUsername") String sender) {
+
+        userService.sendConnectionRequest(sender, receiver);
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", 1);
+        map.put("message", "Connection request sent successfully.");
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+    @PostMapping("/acceptRequest/{requestId}")
+    public ResponseEntity<?> acceptRequest(@PathVariable("requestId") String requestId, @RequestHeader("loggedInUsername") String receiver) {
+
+        userService.acceptConnectionRequest(requestId, receiver);
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", 1);
+        map.put("message", "Connection request accepted successfully.");
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
@@ -115,7 +135,13 @@ public class UserController {
         Map<String, Object> map = new HashMap<>();
         map.put("status", 1);
         map.put("message", "Success.");
-        map.put("data", user);
+        map.put("data", GetUserDTO.builder()
+                        .name(user.getName())
+                        .email(user.getEmail())
+                        .picture(user.getPicture())
+                        .createdOn(user.getCreatedOn())
+                        .updatedOn(user.getUpdatedOn())
+                .build());
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
@@ -126,7 +152,8 @@ public class UserController {
         return userService.validateToken(token);
     }
 
-    //To be used by other services to get user details from username
+    //To be used by other services to get user details from username.
+    //Properties: "name", "picture"
     @GetMapping("/nameAndPicture/{username}")
     public Map<String, String> getNameAndPicture(@PathVariable("username") String username) {
         return userService.getNameAndPicture(username);

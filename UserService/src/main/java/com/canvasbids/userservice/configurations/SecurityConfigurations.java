@@ -47,7 +47,7 @@ public class SecurityConfigurations {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf->csrf.disable())
-                .authorizeHttpRequests(req-> req.requestMatchers("/login", "/register", "/isValid/**", "/nameAndPicture/**").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(req-> req.anyRequest().permitAll())
 
                 .userDetailsService(userDetailsService())
                 .build();

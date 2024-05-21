@@ -18,7 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="post")
+@Table(name="posts")
 public class Post {
     @GenericGenerator(name="postIdGenerator", type = PostIdGenerator.class)
     @GeneratedValue(generator = "postIdGenerator")
@@ -35,8 +35,12 @@ public class Post {
     @JsonIgnore
     private List<Comment> comments;
     @CreationTimestamp
-    Date createdAt;
+    @Column(updatable = false)
+    private Date createdAt;
     @UpdateTimestamp
-    Date updatedAt;
-    private boolean auctionItemFlag;
+    private Date updatedAt;
+    private Boolean auctionItemFlag;
+    private long minimumBidAmount;
+    private Boolean isAuctionOpen;
+    private Date expiresAt;
 }

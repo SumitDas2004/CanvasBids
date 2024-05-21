@@ -13,19 +13,14 @@ import lombok.NoArgsConstructor;
 @Data
 public class BidRequestDTO {
     @NotBlank
-    private String name;
-    @NotBlank
     private String postId;
-    @NotBlank
-    private String picture;
     private long amount;
 
     public Bid toBid(){
         return Bid.builder()
-                .name(this.name)
                 .postId(this.postId)
-                .picture(this.picture)
                 .amount(this.amount)
+                .isWinner(false)
                 .build();
     }
 }
